@@ -172,15 +172,15 @@
         if(length[0].value === 1) subBoolean = false
 
         if (e.target.id === 'sub' && subBoolean){
-          this.$emit('tapHDbtn', 'sub')
+          this.$emit('lengthChange', 'sub')
         }
         if (e.target.id === 'add'){
-          this.$emit('tapHDbtn', 'add')
+          this.$emit('lengthChange', 'add')
         }
       },
 
       inputValueChange(e) {
-        this.$emit('inputValueUpdate', e.target.id, e.detail.value)
+        this.$emit('inputValueChange', e.target.id, e.detail.value)
       }
     }
   }
