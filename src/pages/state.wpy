@@ -1,10 +1,16 @@
 <style lang="less" scoped>
-
+  .box{
+    width: 100%;
+    margin: 50rpx auto 0 auto;
+  }
 </style>
 
 <template>
   <view>
-    state
+    <navigatorBack :message.sync="page"></navigatorBack>
+    <view class="container box">
+      <boardlist :list.sync="stateData"></boardlist>
+    </view>
     <tabBar :list.sync="m" father="state"></tabBar>
   </view>
 </template>
@@ -13,19 +19,93 @@
   import wepy from 'wepy'
   import api from '../api/api.js'
   import tip from '../utils/tip.js'
-  import {getLang, setLang} from '../lang/index.js'
+  import { getLang } from '../lang/index.js'
+  import Boardlist from '../components/boardlist'
   import TabBar from '../components/tab-bar'
+  import NavigatorBack from '../components/navigator-back'
 
   export default class State extends wepy.page {
     components = {
-      tabBar: TabBar
+      boardlist: Boardlist,
+      tabBar: TabBar,
+      navigatorBack: NavigatorBack
     }
 
     data = {
       // 语种
       language: '',
       // 静态文字
-      m: {}
+      m: {},
+      page: '',
+      stateData: [{
+        id: '1768S180623_0101900001',
+        series: 'Sunrise',
+        type: 'Long',
+        size: `9'0"`,
+        num: '0001',
+        depot: `Jing's Place`,
+        state: 'Idle',
+        outTime: '20180705 PM 04:00',
+        returnTime: '20180705 PM 07:00',
+        name: 'Meimei Han',
+        nationality: 'Chinese',
+        passpor: 'E888888888',
+        phone: '0824719821',
+        email: '12093u1283@hotmail.com'
+      }, {
+        id: '1768S180623_0101900001',
+        series: 'Sunrise',
+        type: 'Long',
+        size: `9'0"`,
+        num: '0001',
+        depot: `Jing's Place`,
+        state: 'Idle',
+        outTime: '20180705 PM 04:00',
+        returnTime: '20180705 PM 07:00',
+        name: 'Meimei Han',
+        nationality: 'Chinese',
+        passpor: 'E888888888',
+        phone: '0824719821',
+        email: '12093u1283@hotmail.com'
+      }, {
+        id: '1768S180623_0101900001',
+        series: 'Sunrise',
+        type: 'Long',
+        size: `9'0"`,
+        num: '0001',
+        depot: `Jing's Place`,
+        state: 'Idle',
+        outTime: '20180705 PM 04:00',
+        returnTime: '20180705 PM 07:00',
+        name: 'Meimei Han',
+        nationality: 'Chinese',
+        passpor: 'E888888888',
+        phone: '0824719821',
+        email: '12093u1283@hotmail.com'
+      }, {
+        id: '1768S180623_0101900001',
+        series: 'Sunrise',
+        type: 'Long',
+        size: `9'0"`,
+        num: '0001',
+        depot: `Jing's Place`,
+        state: 'Idle',
+        outTime: '20180705 PM 04:00',
+        returnTime: '20180705 PM 07:00',
+        name: 'Meimei Han',
+        nationality: 'Chinese',
+        passpor: 'E888888888',
+        phone: '0824719821',
+        email: '12093u1283@hotmail.com'
+      }]
+    }
+
+    watch = {
+      m(newValue, oldValue) {
+        if(newValue.page){
+          this.page = newValue.page
+        }
+      }
     }
 
     async onLoad() {

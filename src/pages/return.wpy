@@ -4,95 +4,6 @@
     margin: 50rpx auto 0 auto;
 
   }
-  .goodsId{
-    width: 100%;
-    margin-bottom: 10rpx;
-    height: 80rpx;
-    font-size: 28rpx;
-    text-align: center;
-    line-height: 80rpx;
-    border-bottom: 1rpx solid rgb(202, 202, 202);
-  }
-  .form{
-    width: 100%;
-    margin-bottom: 40rpx;
-    .row{
-      width: 100%;
-      height: 80rpx;
-      margin-bottom: 10rpx;
-      border-bottom: 1rpx solid rgb(202, 202, 202);
-      background-color: rgb(247, 247, 247);
-    }
-  }
-  .title{
-    display: block;
-    float: left;
-    height: 100%;
-    width: 270rpx;
-    font-size: 32rpx;
-    font-weight: 400;
-    line-height: 80rpx;
-    color: rgb(104, 104, 104);
-    padding-left: 30rpx;
-  }
-  .input{
-    box-sizing: border-box;
-    width: 375rpx;
-    height: 100%;
-    color: #4395ff;
-    font-weight: 700;
-    font-size: 32rpx;
-    line-height: 80rpx;
-    float: left;
-    text-align: center;
-    border-left: 1rpx solid rgb(202, 202, 202);
-    border-right: 1rpx solid rgb(202, 202, 202);
-    border-radius: 10rpx;
-    input{
-      width: 100%;
-      height: 100%;
-    }
-    .disabled{
-      background-color: rgb(204, 204, 204);
-    }
-  }
-  .type>.active{
-    background-color: #4395ff;
-    color: #fff;
-  }
-  .type>button{
-    width: 170rpx;
-    height: 80%;
-    margin-right: 10rpx;
-    vertical-align: middle;
-    border-radius: 5rpx;
-    color: rgb(104, 104, 104);
-  }
-  .time{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    text{
-      display: block;
-      width: 100rpx;
-      height: 60rpx;
-      color: #4395ff;
-      font-weight: 700;
-      font-size: 32rpx;
-      line-height: 60rpx;
-      text-align: center;
-    }
-    button{
-      width: 60rpx;
-      height: 60rpx;
-      padding: 0;
-      border: 0;
-    }
-  }
-  .time image{
-    width: 100%;
-    height: 100%;
-  }
   .backAndsubmit{
     width: 100%;
     height: 80rpx;
@@ -115,57 +26,7 @@
   <view>
     <navigatorBack :message.sync="page"></navigatorBack>
     <view class="container box">
-      <view class="goodsId">{{returnData.id}}</view>
-      <view class="form">
-        <view class="row">
-          <text class="title">{{m.price}}</text>
-          <view class="input">
-            <input type="text" class="disabled" value="{{returnData.price}}" disabled/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.type}}</text>
-          <view class="input type">
-            <input type="text" class="disabled" value="{{returnData.type}}" disabled/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.outTime}}</text>
-          <view class="input">
-            <input type="text" class="disabled" value="{{returnData.outTime}}" disabled/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.returnTime}}</text>
-          <view class="input">
-            <input type="text" class="disabled" value="{{returnData.returnTime}}" disabled/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.length}}</text>
-          <view class="input">
-            <input type="text" class="disabled" value="{{computedRenttime}}" disabled/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.totalPrice}}</text>
-          <view class="input">
-            <input type="text" class="disabled" value="{{computedTotalprice}}" disabled/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.actualCollection}}</text>
-          <view class="input">
-            <input id="actualCollection" bindconfirm="binddata" type="text" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.change}}</text>
-          <view class="input">
-            <input type="text" class="disabled" value="{{computedChange}}" disabled/>
-          </view>
-        </view>
-      </view>
+      <formlist :list.sync="formData" :goodsId.sync="goodsId"></formlist>
       <view class="backAndsubmit">
         <button hover-class="button-hover" @tap="navToHome">{{m.back}}</button>
         <button @tap="onSubmit" hover-class="button-hover">{{m.submit}}</button>
@@ -180,11 +41,13 @@
   import api from '../api/api.js'
   import tip from '../utils/tip.js'
   import { getLang } from '../lang/index.js'
+  import Formlist from '../components/formlist'
   import TabBar from '../components/tab-bar'
   import NavigatorBack from '../components/navigator-back'
 
   export default class Return extends wepy.page {
     components = {
+      formlist: Formlist,
       tabBar: TabBar,
       navigatorBack: NavigatorBack
     }
@@ -196,7 +59,7 @@
       m: {},
       // 传给tabBar组件，让其知道谁是其父组件
       page: '',
-      actualCollection: '',
+      // state/id/price/type/outTime这几个是需要后台给的。actualCollection由用户填写。returnTime为时间戳
       returnData: {
         state: 'idle',
         id: '1768S180623_0101900001',
@@ -204,10 +67,11 @@
         type: 'Hour',
         outTime: '20180705 PM 04:00',
         returnTime: '20180705 PM 07:00',
-        length: '',
-        totalPrice: ''
-      },
-      typeBtnClass: ['active', '']
+        length: '3',
+        totalPrice: '900',
+        actualCollection: '',
+        change: ''
+      }
     }
 
     watch = {
@@ -219,54 +83,82 @@
         if(newValue.state === 'idle未出租'){
           this.redirect()
         }
+      },
+      // 这个watch函数的启动源自returnData.outTime的值从''变为有值，但是现在outTime是直接写死的，所以无法触发watch，就暂时都给注释了
+      returnData(newValue, oldValue) {
+        
+        // 根据returnData.outTime跟时间戳计算length
+        // if (newValue.outTime &&newValue.outTime !== oldValue.outTime){
+          // let date = new Date()
+          // this.returnData.returnTime = date
+          // if (newValue.type === 'Hour'){
+          //   let l = Math.round((date - newValue.outTime)/3600000)
+          //   this.returnData.length = l
+          // } else {
+          //   let l =Math.round(((date - newValue.outTime)/3600000)/24)
+          //   this.returnData.length = l
+          // }
+          // this.$apply()
+        // }
+
+        // 根据returnData.price与length计算总价
+        // if (newValue.length && newValue.length !== oldValue.length){
+        //   let total = newValue.price * newValue.length
+        //   this.returnData.totalPrice = total
+            //  this.$apply()
+        // }
+
+        // 根据actualCollection与totalPrice计算找零金额
+        if (newValue.actualCollection && newValue.actualCollection !== oldValue.actualCollection){
+          this.returnData.change = newValue.actualCollection - newValue.totalPrice
+          // 在此发现一个问题，计算属性会先于this.returnData.change值修改执行，加this.$apply()后解决
+          this.$apply()
+        }
       }
     }
 
     computed = {
-      // 根据returnData.outTime跟时间戳计算出租时长
-      computedRenttime(){
-        // let date = new Date()
-        // this.returnData.returnTime = date
-        // if (this.returnData.type === 'Hour'){
-        //   let l = Math.round((date - this.returnData.outTime)/3600000)
-        //   this.returnData.length = l
-        //   return l
-        // } else {
-        //   let l =Math.round(((date - this.returnData.outTime)/3600000)/24)
-        //   this.returnData.length = l
-        //   return l
-        // }
-        return 3
+      // 监听returnData、m变化，并格式化为Formlist组件所需数据
+      goodsId() {
+        return this.returnData.id
       },
+      formData() {
+        // 总价未计算出时不执行,因为总价是最后计算出来的，在总价出来之前数据铁定不全
+        if(!this.returnData.totalPrice) return
+        // formlist组件所需数据的id是写死的
+        let data = [
+          {id: 'price'}, 
+          {id: 'type'}, 
+          {id: 'outTime'}, 
+          {id: 'returnTime'}, 
+          {id: 'length'}, 
+          {id: 'totalPrice'}, 
+          {id: 'actualCollection'}, 
+          {id: 'change'}
+        ]
 
-      // 根据returnData.price与length计算总价
-      computedTotalprice(){
-        // let total = this.returnData.price * this.returnData.length
-        // this.returnData.totalPrice = total
-        // return total
-        return 900
-      },
-
-      // 找零金额
-      computedChange() {
-        // return this.returnData.actualCollection - this.returnData.totalPrice
-        return 100
+        data.forEach(ele => {
+          // 添加value
+          ele.value = this.returnData[ele.id]
+          // 添加text
+          ele.text = this.m[ele.id]
+          // 添加type
+          ele.type = 'input'
+          // 添加disabled,palceholder
+          if (ele.id === 'actualCollection'){
+            ele.disabled = false
+            ele.placeholder = this.m.placeholder
+          } else {
+            ele.disabled = true
+          }
+        })
+        return data
       }
     }
 
     methods = {
       navToHome(){
         wx.navigateTo({url:'home'})
-      },
-
-      // input value绑定returnData处理函数
-      binddata(e) {
-        let value = e.detail.value
-        switch (e.target.id) {
-          case 'actualCollection':
-            this.actualCollection = value
-            break
-        }
       },
 
       // 重定向回home页，并弹窗提示
@@ -283,6 +175,19 @@
       onSubmit(){
         console.log(this.returnData)
       }      
+    }
+
+    // 监听子组件Formlist的事件广播
+    events = {
+      // 更新输入框的value到returnData
+      'inputValueChange': (id, value) => {
+        if(this.returnData[id] === value) return
+        switch (id) {
+          case 'actualCollection':
+            this.returnData.actualCollection = value
+            break
+        }
+      }
     }
 
     async onLoad() {

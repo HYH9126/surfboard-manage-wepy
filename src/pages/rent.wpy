@@ -25,7 +25,7 @@
   <view>
     <navigatorBack :message.sync="page"></navigatorBack>
     <view class="container box">
-      <formlist :list.sync="formData" :goodsId.sync="rentData.id"></formlist>
+      <formlist :list.sync="formData" :goodsId.sync="goodsId"></formlist>
       <view class="backAndsubmit">
         <button hover-class="button-hover" @tap="navToHome">{{m.back}}</button>
         <button @tap="onSubmit" hover-class="button-hover">{{m.submit}}</button>
@@ -57,15 +57,16 @@
       // 静态文字
       m: {},
       page: '',
+      // state/id/price这三个是需要后台给的。其余的用户填写。type/length要给初始值Hour跟3
       rentData: {
         state: 'out',
         id: '1768S180623_0101900001',
         price: '300',
         type: 'Hour',
-        time: 3,
+        length: 3,
         name: '',
         nationality: '',
-        passportNum: '',
+        passport: '',
         phone: '',
         email: ''
       }
@@ -84,11 +85,58 @@
 
     // 监听rentData、m变化，并格式化为Formlist组件所需数据
     computed = {
+      goodsId() {
+        return this.rentData.id
+      },
+      formData() {
+        // formlist组件所需数据的id是写死的
+        let data = [
+          {id: 'price'}, 
+          {id: 'type'}, 
+          {id: 'length'}, 
+          {id: 'name'}, 
+          {id: 'nationality'}, 
+          {id: 'passport'}, 
+          {id: 'phone'}, 
+          {id: 'email'}
+        ]
 
+        data.forEach(ele => {
+          // 添加value
+          if (ele.id === 'type'){
+            ele.value = ['Hour', 'Day']
+          } else {
+            ele.value = this.rentData[ele.id]
+          }
+          // 添加text
+          ele.text = this.m[ele.id]
+          // 添加type
+          switch (ele.id) {
+            case 'type':
+              ele.type = 'button'
+              break
+            case 'length':
+              ele.type = 'addSub'
+              break
+            default:
+              ele.type = 'input'
+          }
+          // 添加disabled,palceholder
+          if (ele.type === 'input'){
+            if (ele.id === 'price'){
+              ele.disabled = true
+            } else {
+              ele.disabled = false
+              ele.placeholder = this.m.placeholder
+            }
+          } 
+        })
+        return data
+      }
     }
 
     methods = {
-      navToHome(){
+      navToHome() {
         wx.navigateTo({url:'home'})
       },
 
@@ -103,7 +151,7 @@
       },
 
       // 提交
-      onSubmit(){
+      onSubmit() {
         console.log(this.rentData)
       }      
     }
@@ -113,10 +161,10 @@
       // 修改租赁类型、出租时长
       'tapHDbtn': (id) => {
         if (id === 'day') {
-          this.rentData.time = 1
+          this.rentData.length = 1
           this.rentData.type = 'Day'
         } else {
-          this.rentData.time = 3
+          this.rentData.length = 3
           this.rentData.type = 'Hour'
         }
       },
@@ -124,14 +172,15 @@
       // 出租时长增加、减少
       'lengthChange': (type) => {
         if (type === 'sub') {
-          this.rentData.time--
+          this.rentData.length--
         } else {
-          this.rentData.time++
+          this.rentData.length++
         }
       },
 
       // 更新输入框的value到rentData
       'inputValueChange': (id, value) => {
+        if(this.rentData[id] === value) return
         switch (id) {
           case 'name':
             this.rentData.name = value
@@ -139,8 +188,8 @@
           case 'nationality':
             this.rentData.nationality = value
             break
-          case 'passportNum':
-            this.rentData.passportNum = value
+          case 'passport':
+            this.rentData.passport = value
             break
           case 'phone':
             this.rentData.phone = value

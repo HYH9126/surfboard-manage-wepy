@@ -1,0 +1,127 @@
+<style lang="less" scoped>
+  .item{
+    width: 720rpx;
+    padding: 0 15rpx;
+    height: 220rpx;
+    margin-bottom: 20rpx;
+    background-color: rgb(187, 214, 248);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .half{
+    width: 365rpx;
+    height: 90%;
+  }
+  .id{
+    width: 100%;
+    height: 60rpx;
+    font-size: 28rpx;
+    line-height: 60rpx;
+    color: rgb(68, 68, 68);
+  }
+  .mes{
+    width: 100%;
+    height: 40rpx;
+    font-size: 24rpx;
+    line-height: 40rpx;
+    color: rgb(68, 68, 68);
+    display: flex;
+    justify-content: space-around;
+  }
+  .time{
+    width: 100%;
+    height: 80rpx;
+    view{
+      height: 40rpx;
+      font-size: 24rpx;
+      line-height: 40rpx;
+      color: rgb(68, 68, 68);
+    }
+  }
+  .person{
+    width: 100%;
+    height: 100rpx;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 24rpx;
+    line-height: 40rpx;
+    color: rgb(68, 68, 68);
+  }
+</style>
+
+<template>
+  <view>
+    <view wx:for="{{list}}" wx:key="{{item.id}}" class="item">
+      <view class="half">
+        <view class="id">{{item.id}}</view>
+        <view class="mes">
+          <text>{{item.series}}</text>
+          <text>{{item.type}}</text>
+        </view>
+        <view class="mes">
+          <text>{{item.size}}</text>
+          <text>{{item.num}}</text>
+        </view>
+        <view class="mes">
+          <text>{{item.state}}</text>
+          <text>{{item.depot}}</text>
+        </view>
+      </view>
+      <view class="half"></view>
+      <view class="half">
+        <view class="time">
+          <view>{{item.outTime}}</view>
+          <view>{{item.returnTime}}</view>
+        </view>
+        <view class="person">
+          <text>{{item.name}}</text>
+          <text>/</text>
+          <text>{{item.nationality}}</text>
+          <text>/</text>
+          <text>{{item.passpor}}</text>
+          <text>/</text>
+          <text>{{item.phone}}</text>
+          <text>/</text>
+          <text>{{item.email}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import tip from '../utils/tip.js'
+
+  /*
+    list所需数据结构
+      [{
+        id: String,
+        series: String,
+        type: String,
+        size: String,
+        num: Boolen,
+        depot: String,
+        state: String,
+        outTime: String,
+        returnTime: String,
+        name: String,
+        nationality: String,
+        passpor: String,
+        phone: String,
+        email: String,
+      }]
+  */
+
+  export default class Boardlist extends wepy.component {
+    props = {
+      list: {
+        type: Array,
+        default: null
+      }
+    }
+  }
+</script>

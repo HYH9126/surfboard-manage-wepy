@@ -97,13 +97,22 @@
       <view class="row" wx:for="{{list}}" wx:key="{{item.id}}">
         <text class="title">{{item.text}}</text>
         <view wx:if="{{item.type==='input'}}" class="input">
-          <input id="{{item.id}}" type="text" class="{{item.disabled?'disabled':''}}" value="{{item.value}}" disabled="{{item.disabled}}" bindconfirm="dataChange"/>
+          <input 
+            id="{{item.id}}" 
+            type="text" 
+            class="{{item.disabled?'disabled':''}}" 
+            value="{{item.value}}" 
+            disabled="{{item.disabled}}" 
+            bindconfirm="inputValueChange"
+            bindblur="inputValueChange"
+            placeholder="{{item.placeholder}}"
+          />
         </view>
         <view wx:elif="{{item.type==='button'}}" class="input type">
           <button id="hour" size="mini" @tap="changeHDbtn" class="{{hourBtnActive?'active':''}}">{{item.value[0]}}</button>
           <button id="day" size="mini" @tap="changeHDbtn" class="{{dayBtnActive?'active':''}}">{{item.value[1]}}</button>
         </view>
-        <view wx:elif="item.type==='length'" class="input time">
+        <view wx:elif="{{item.type==='addSub'}}" class="input time">
           <button id="sub" size="mini" @tap="tapAddorSub" hover-class="button-hover">
             <image src="../images/sub.png" />
           </button>
@@ -129,7 +138,7 @@
         id: String,
         value: String,
         disabled: Boolen,
-        placeHolder: String
+        placeholder: String
       }]
   */
 
@@ -167,7 +176,7 @@
       tapAddorSub(e) {
         let subBoolean = true
         let length = this.list.filter((ele) => {
-          return ele.type === 'length'
+          return ele.type === 'addSub'
         })
         if(length[0].value === 1) subBoolean = false
 

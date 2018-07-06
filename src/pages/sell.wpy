@@ -4,94 +4,6 @@
     margin: 50rpx auto 0 auto;
 
   }
-  .goodsId{
-    width: 100%;
-    margin-bottom: 10rpx;
-    height: 80rpx;
-    font-size: 28rpx;
-    text-align: center;
-    line-height: 80rpx;
-    border-bottom: 1rpx solid rgb(202, 202, 202);
-  }
-  .form{
-    width: 100%;
-    .row{
-      width: 100%;
-      height: 80rpx;
-      margin-bottom: 10rpx;
-      border-bottom: 1rpx solid rgb(202, 202, 202);
-      background-color: rgb(247, 247, 247);
-    }
-  }
-  .title{
-    display: block;
-    float: left;
-    height: 100%;
-    width: 270rpx;
-    font-size: 32rpx;
-    font-weight: 400;
-    line-height: 80rpx;
-    color: rgb(104, 104, 104);
-    padding-left: 30rpx;
-  }
-  .input{
-    box-sizing: border-box;
-    width: 375rpx;
-    height: 100%;
-    color: #4395ff;
-    font-weight: 700;
-    font-size: 32rpx;
-    line-height: 80rpx;
-    float: left;
-    text-align: center;
-    border-left: 1rpx solid rgb(202, 202, 202);
-    border-right: 1rpx solid rgb(202, 202, 202);
-    border-radius: 10rpx;
-    input{
-      width: 100%;
-      height: 100%;
-    }
-    .disabled{
-      background-color: rgb(204, 204, 204);
-    }
-  }
-  .type>.active{
-    background-color: #4395ff;
-    color: #fff;
-  }
-  .type>button{
-    width: 170rpx;
-    height: 80%;
-    margin-right: 10rpx;
-    vertical-align: middle;
-    border-radius: 5rpx;
-    color: rgb(104, 104, 104);
-  }
-  .time{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    text{
-      display: block;
-      width: 100rpx;
-      height: 60rpx;
-      color: #4395ff;
-      font-weight: 700;
-      font-size: 32rpx;
-      line-height: 60rpx;
-      text-align: center;
-    }
-    button{
-      width: 60rpx;
-      height: 60rpx;
-      padding: 0;
-      border: 0;
-    }
-  }
-  .time image{
-    width: 100%;
-    height: 100%;
-  }
   .backAndsubmit{
     width: 100%;
     height: 80rpx;
@@ -114,63 +26,7 @@
   <view>
     <navigatorBack :message.sync="page"></navigatorBack>
     <view class="container box">
-      <view class="goodsId">{{sellData.id}}</view>
-      <view class="form">
-        <view class="row">
-          <text class="title">{{m.price}}</text>
-          <view class="input">
-            <input type="text" class="disabled" value="{{sellData.price}}" disabled/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.name}}</text>
-          <view class="input">
-            <input type="text" id="name" bindconfirm="binddata" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.nationality}}</text>
-          <view class="input">
-            <input type="text" id="nationality" bindconfirm="binddata" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.passport}}</text>
-          <view class="input">
-            <input type="text" id="passport" bindconfirm="binddata" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.phone}}</text>
-          <view class="input">
-            <input type="text" id="phone" bindconfirm="binddata" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.email}}</text>
-          <view class="input">
-            <input type="text" id="email" bindconfirm="binddata" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.finalPrice}}</text>
-          <view class="input">
-            <input id="finalPrice" bindconfirm="binddata" type="text" value="{{sellData.finalPrice}}" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.actualCollection}}</text>
-          <view class="input">
-            <input type="text" id="actualCollection" bindconfirm="binddata" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-        <view class="row">
-          <text class="title">{{m.change}}</text>
-          <view class="input">
-            <input type="text" id="change" bindconfirm="binddata" placeholder="{{m.placeholder}}"/>
-          </view>
-        </view>
-      </view>
+      <formlist :list.sync="formData" :goodsId.sync="goodsId"></formlist>
       <view class="backAndsubmit">
         <button hover-class="button-hover" @tap="navToHome">{{m.back}}</button>
         <button @tap="onSubmit" hover-class="button-hover">{{m.submit}}</button>
@@ -185,11 +41,13 @@
   import api from '../api/api.js'
   import tip from '../utils/tip.js'
   import { getLang } from '../lang/index.js'
+  import Formlist from '../components/formlist'
   import TabBar from '../components/tab-bar'
   import NavigatorBack from '../components/navigator-back'
 
   export default class Sell extends wepy.page {
     components = {
+      formlist: Formlist,
       tabBar: TabBar,
       navigatorBack: NavigatorBack
     }
@@ -202,18 +60,20 @@
       // 传给tabBar组件，让其知道谁是其父组件
       page: '',
       actualCollection: '',
+      // state/id/price这三个是需要后台给的。
       sellData: {
         state: 'sell',
         id: '1768S180623_0101900001',
         price: '300',
         name: '',
         nationality: '',
-        passportNum: '',
+        passport: '',
         phone: '',
         email: '',
-        finalPrice: ''
-      },
-      typeBtnClass: ['active', '']
+        totalPrice: '300',
+        actualCollection: '',
+        change: ''
+      }
     }
 
     watch = {
@@ -221,22 +81,62 @@
         if(newValue.page){
           this.page = newValue.page
         }
-        // 未出租则重定向回home页
-        if(newValue.state === 'qqq'){
-          this.redirect()
-        }
       },
 
       sellData(newValue, oldValue) {
-        if(newValue.price)
-        this.sellData.finalPrice = newValue.price
+        // 拿到单价后给出总价的初始值。暂时设定总价是可以操作修改的，例如给了个优惠价格。
+        // if(newValue.price)
+        // 因price暂时是写死的，所以无法进入次判断。
+        // this.sellData.totalPrice = newValue.price
+
+        // 根据actualCollection与totalPrice计算找零金额
+        console.log(newValue.actualCollection)
+        if (newValue.actualCollection && newValue.actualCollection !== oldValue.actualCollection){
+          this.sellData.change = newValue.actualCollection - newValue.totalPrice
+          console.log(newValue.actualCollection - newValue.totalPrice)
+          // 在此发现一个问题，计算属性会先于this.sellData.change值修改执行，加this.$apply()后解决
+          this.$apply()
+        }
       }
     }
 
     computed = {
-      // 找零金额
-      computedChange() {
-        return this.sellData.actualCollection - this.sellData.finalPrice
+      // 监听sellData、m变化，并格式化为Formlist组件所需数据
+      goodsId() {
+        return this.sellData.id
+      },
+      formData() {
+        // 总价未计算出时不执行,因为总价是最后计算出来的，在总价出来之前数据铁定不全
+        if(!this.sellData.totalPrice) return
+        // formlist组件所需数据的id是写死的
+        let data = [
+          {id: 'price'}, 
+          {id: 'name'}, 
+          {id: 'nationality'}, 
+          {id: 'passport'}, 
+          {id: 'phone'}, 
+          {id: 'email'}, 
+          {id: 'totalPrice'}, 
+          {id: 'actualCollection'},
+          {id: 'change'}
+        ]
+
+        data.forEach(ele => {
+          // 添加value
+          ele.value = this.sellData[ele.id]
+          // 添加text
+          ele.text = this.m[ele.id]
+          // 添加type
+          ele.type = 'input'
+          // 添加disabled,palceholder
+          if (ele.id === 'price' || ele.id === 'change'){
+            ele.disabled = true
+          } else {
+            ele.disabled = false
+            ele.placeholder = this.m.placeholder
+          }
+        })
+        return data
       }
     }
 
@@ -245,18 +145,26 @@
         wx.navigateTo({url:'home'})
       },
 
-      // input value绑定sellData处理函数
-      binddata(e) {
-        let value = e.detail.value
-        switch (e.target.id) {
+      // 提交
+      onSubmit(){
+        console.log(this.sellData)
+      }      
+    }
+
+    // 监听子组件Formlist的事件广播
+    events = {
+      // 更新输入框的value到sellData
+      'inputValueChange': (id, value) => {
+        if(this.sellData[id] === value) return
+        switch (id) {
           case 'name':
             this.sellData.name = value
             break
           case 'nationality':
             this.sellData.nationality = value
             break
-          case 'passportNum':
-            this.sellData.passportNum = value
+          case 'passport':
+            this.sellData.passport = value
             break
           case 'phone':
             this.sellData.phone = value
@@ -268,25 +176,10 @@
             this.sellData.phone = value
             break
           case 'actualCollection':
-            this.actualCollection = value
+            this.sellData.actualCollection = value
             break
         }
-      },
-
-      // 重定向回home页，并弹窗提示
-      redirect() {
-        wepy.redirectTo({
-          url: 'home',
-          success() {
-            tip.alert('商品未出租')
-          }
-        })
-      },
-
-      // 提交
-      onSubmit(){
-        console.log(this.sellData)
-      }      
+      }
     }
 
     async onLoad() {

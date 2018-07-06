@@ -187,9 +187,11 @@
     }
 
     async onLoad() {
+      wepy.redirectTo({url: './home'})
       await getLang('login', this)
       this.language === 'en' ? this.enbtnBg = 'langBtn-tap' : this.zhbtnBg = 'langBtn-tap'
-      await this.getUnionidByCode()
+      // 解开下行注释，便能开启登录验证
+      // await this.getUnionidByCode()
     }
   }
 </script>
