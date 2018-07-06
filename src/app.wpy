@@ -1,0 +1,40 @@
+<style lang="less">
+  .container{
+    padding-top:140rpx;
+  }
+  .button-hover{
+    background-color: #8dbdfc;
+  }
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+
+export default class extends wepy.app {
+  constructor () {
+    super()
+    this.use('promisify')
+  }
+
+  config = {
+    pages: [
+      'pages/login',
+      'pages/home',
+      'pages/rent',
+      'pages/return',
+      'pages/sell',
+      'pages/fix',
+      'pages/state'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationStyle: 'custom'
+    }
+  }
+
+  onLaunch() {
+    console.log('on launch')
+  }
+}
+</script>

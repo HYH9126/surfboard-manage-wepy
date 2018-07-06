@@ -1,0 +1,35 @@
+<style lang="less" scoped>
+
+</style>
+
+<template>
+  <view>
+    state
+    <tabBar :list.sync="m" father="state"></tabBar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../api/api.js'
+  import tip from '../utils/tip.js'
+  import {getLang, setLang} from '../lang/index.js'
+  import TabBar from '../components/tab-bar'
+
+  export default class State extends wepy.page {
+    components = {
+      tabBar: TabBar
+    }
+
+    data = {
+      // 语种
+      language: '',
+      // 静态文字
+      m: {}
+    }
+
+    async onLoad() {
+      await getLang('state', this)
+    }
+  }
+</script>

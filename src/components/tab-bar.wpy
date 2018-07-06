@@ -1,0 +1,77 @@
+<style scoped lang="less">
+  .tabBar{
+    width: 100%;
+    background-color: #fff;
+    height: 80rpx;
+    position: fixed;
+    border-top: 1rpx solid rgb(219, 219, 219);
+    bottom: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    navigator{
+      box-sizing: border-box;
+      width: 20%;
+      color: #000;
+      font-size: 28rpx;
+      line-height: 80rpx;
+      text-align: center;
+      border-right:1rpx solid rgb(226, 226, 226);
+    }
+    navigator:last-of-type{
+      border: 0;
+    }
+  }
+  .active{
+    background-color: #4395ff;
+    color: #fff;
+  }
+</style>
+<template>
+  <view class="tabBar">
+    <navigator 
+      open-type="navigate" 
+      wx:for="{{text}}" 
+      wx:key="{{index}}" 
+      url="{{item.url}}" 
+      class="{{father === item.url ? 'active' : ''}}"
+    >
+      {{item.text}}
+    </navigator>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class TabBar extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: null
+      },
+      father: String
+    }
+
+    /*
+      将[{rent:'Rent'}, {sell:'Sell'}, {return:'Return'}]格式转化为所需的：
+      [{text:'Rent', url:'rent'}, {text:'Sell', url:'sell'}, {text:'Return', url:'return'}]
+    */
+    computed = {
+      text () {
+        if(this.list.tabBar){
+          let arr = []
+          this.list.tabBar.forEach((ele, i) => {
+            let obj = {}
+            obj.url = Object.keys(ele)[0]
+            obj.text = Object.values(ele)[0]
+            arr.push(obj)
+          })
+          return arr
+        }
+      }
+    }
+
+    onLoad() {
+    }
+  }
+</script>

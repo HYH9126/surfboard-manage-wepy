@@ -1,0 +1,159 @@
+<style lang="less" scoped>
+  .box{
+    width: 90%;
+    margin: 50rpx auto 0rpx auto;
+  }
+  .backAndsubmit{
+    width: 100%;
+    height: 80rpx;
+    display: flex;
+    justify-content: space-around;
+    button{
+      width: 300rpx;
+      height: 80rpx;
+      border: 1rpx solid #4395ff;
+      border-radius: 10rpx;
+    }
+    navigator{
+      width: 100%;
+      height: 100%;
+    }
+  }
+</style>
+
+<template>
+  <view>
+    <navigatorBack :message.sync="page"></navigatorBack>
+    <view class="container box">
+      <formlist :list.sync="formData" :goodsId.sync="rentData.id"></formlist>
+      <view class="backAndsubmit">
+        <button hover-class="button-hover" @tap="navToHome">{{m.back}}</button>
+        <button @tap="onSubmit" hover-class="button-hover">{{m.submit}}</button>
+      </view>
+    </view>
+    <tabBar :list.sync="m" father="rent"></tabBar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../api/api.js'
+  import tip from '../utils/tip.js'
+  import { getLang } from '../lang/index.js'
+  import Formlist from '../components/formlist'
+  import TabBar from '../components/tab-bar'
+  import NavigatorBack from '../components/navigator-back'
+
+  export default class Rent extends wepy.page {
+    components = {
+      formlist: Formlist,
+      tabBar: TabBar,
+      navigatorBack: NavigatorBack
+    }
+
+    data = {
+      // 语种
+      language: '',
+      // 静态文字
+      m: {},
+      page: '',
+      rentData: {
+        state: 'out',
+        id: '1768S180623_0101900001',
+        price: '300',
+        type: 'Hour',
+        time: 3,
+        name: '',
+        nationality: '',
+        passportNum: '',
+        phone: '',
+        email: ''
+      }
+    }
+
+    watch = {
+      m(newValue, oldValue) {
+        if(newValue.page){
+          this.page = newValue.page
+        }
+        if(newValue.state === 'out已出租'){
+          this.redirect()
+        }
+      }
+    }
+
+    // 监听rentData、m变化，并格式化为Formlist组件所需数据
+    computed = {
+
+    }
+
+    methods = {
+      navToHome(){
+        wx.navigateTo({url:'home'})
+      },
+
+      // 重定向回home页，并弹窗提示
+      redirect() {
+        wepy.redirectTo({
+          url: 'home',
+          success() {
+            tip.alert('Goods rented')
+          }
+        })
+      },
+
+      // 提交
+      onSubmit(){
+        console.log(this.rentData)
+      }      
+    }
+
+    // 监听子组件Formlist的事件广播
+    events = {
+      // 修改租赁类型、出租时长
+      'tapHDbtn': (id) => {
+        if (id === 'day') {
+          this.rentData.time = 1
+          this.rentData.type = 'Day'
+        } else {
+          this.rentData.time = 3
+          this.rentData.type = 'Hour'
+        }
+      },
+
+      // 出租时长增加、减少
+      'lengthChange': (type) => {
+        if (type === 'sub') {
+          this.rentData.time--
+        } else {
+          this.rentData.time++
+        }
+      },
+
+      // 更新输入框的value到rentData
+      'inputValueChange': (id, value) => {
+        switch (id) {
+          case 'name':
+            this.rentData.name = value
+            break
+          case 'nationality':
+            this.rentData.nationality = value
+            break
+          case 'passportNum':
+            this.rentData.passportNum = value
+            break
+          case 'phone':
+            this.rentData.phone = value
+            break
+          case 'email':
+            this.rentData.email = value
+            break
+        }
+      }
+    }
+
+    async onLoad() {
+      await getLang('rent', this)
+    }
+  }
+</script>

@@ -1,0 +1,94 @@
+<style lang="less" scoped>
+  .langBtn-tap{
+    background-color: rgb(0, 172, 252);
+  }
+  .langBtn{
+    height: 80rpx;
+    margin-bottom: 50rpx;
+    button{
+      width: 100rpx;
+      float: right;
+    }
+  }
+  .nav{
+    navigator{
+      box-sizing: border-box;
+      width: 100%;
+      height: 120rpx;
+      margin-bottom: 20rpx;
+      text-align: center;
+      font-size: 34rpx;
+      font-weight: 600;
+      line-height: 120rpx;
+      border: 1rpx solid rgb(202, 202, 202);
+      border-radius: 8rpx;
+      background-color: rgb(247, 247, 247);
+    }
+  }
+</style>
+
+<template>
+  <view class="container">
+    <view class="langBtn">
+      <button id="en" size="mini" hover-class="button-hover" @tap="islang" class="{{enbtnBg}}">{{m.english}}</button>
+      <button id="zh" size="mini" hover-class="button-hover" @tap="islang" class="{{zhbtnBg}}">{{m.chinese}}</button>
+    </view>
+    <view class="nav">
+      <navigator url="rent">{{m.rent}}</navigator>
+      <navigator url="return">{{m.return}}</navigator>
+      <navigator url="sell">{{m.sell}}</navigator>
+      <navigator url="fix">{{m.fix}}</navigator>
+      <navigator url="state">{{m.state}}</navigator>
+    </view>
+    <tabBar :list.sync="m" father="home"></tabBar>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../api/api.js'
+  import tip from '../utils/tip.js'
+  import {getLang, setLang} from '../lang/index.js'
+  import TabBar from '../components/tab-bar'
+
+  export default class Home extends wepy.page {
+    components = {
+      tabBar: TabBar
+    }
+
+    data = {
+      // 语种
+      language: '',
+      // 静态文字
+      m: {},
+      enbtnBg: '',
+      zhbtnBg: '',
+    }
+
+    methods = {
+      async islang(e) {
+        let target = e.target.id
+        let lang = target === 'en' ? 'en' : 'zh'
+        this.langbtnbgChange(target)
+        await setLang(lang)
+        await getLang('home', this)
+      }
+    }
+
+    langbtnbgChange(target) {
+      if(target === 'en'){
+        this.enbtnBg = 'langBtn-tap'
+        this.zhbtnBg = ''
+      }else{
+        this.zhbtnBg = 'langBtn-tap'
+        this.enbtnBg = ''
+      }
+      this.$apply()
+    }
+
+    async onLoad() {
+      await getLang('home', this)
+      this.language === 'en' ? this.enbtnBg = 'langBtn-tap' : this.zhbtnBg = 'langBtn-tap'
+    }
+  }
+</script>

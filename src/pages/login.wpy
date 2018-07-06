@@ -1,0 +1,195 @@
+<style lang="less">
+  .container{
+    position: relative;
+  }
+  .langBtn-tap{
+    background-color: rgb(0, 172, 252);
+  }
+  .langBtn{
+    height: 80rpx;
+    margin-bottom: 50rpx;
+    button{
+      width: 100rpx;
+      float: right;
+    }
+  }
+</style>
+<template>
+  <view class="container">
+    <view class="langBtn">
+      <button id="en" size="mini" hover-class="button-hover" @tap="islang" class="{{enbtnBg}}">{{m.english}}</button>
+      <button id="zh" size="mini" hover-class="button-hover" @tap="islang" class="{{zhbtnBg}}">{{m.chinese}}</button>
+    </view>
+    <view class="logo">
+      <text>{{m.logo}}</text>
+    </view>
+    <view hidden="{{isHidden}}">
+      <text>{{m.userinfoLogin}}</text>
+      <button class="login" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">{{m.loginBtn}}</button>
+    </view>
+    <view hidden="{{!isHidden}}">
+      <text>{{m.phoneLogin}}</text>
+      <button class="login" open-type="getPhoneNumber" bindgetphonenumber="bindgetphonenumber">{{m.loginBtn}}</button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../api/api.js'
+  import tip from '../utils/tip.js'
+  import {getLang, setLang} from '../lang/index.js'
+
+  export default class Login extends wepy.page {
+    components = {
+    }
+
+    data = {
+      // 语种
+      language: '',
+      // 静态文字
+      m: {},
+      enbtnBg: '',
+      zhbtnBg: '',
+      // 全局装填登录验证返回值
+      json: {},
+      isHidden: false,
+      rawData: null,
+      encryptedData: null
+    }
+
+    //监听请求返回状态码，继而判断下一步做什么
+    watch = {
+      json (newValue, oldValue) {
+        switch(newValue.code) {
+          // 登陆成功
+          case 0:
+            tip.success('Login success！', 1000)
+            wepy.redirectTo({url: './home'})
+            break
+          // 需通过userInfo验证登录
+          case 10000:
+            this.queryAuthorizationInformation()
+            this.json = null
+            break
+          // 需通过phone验证登录
+          case 10003:
+          case 10004:
+            this.isHidden = true
+            this.json = null
+            break
+          // 无权限登录
+          case 10006:
+            tip.error(newValue.data, () => {wepy.navigateBack(-1)})
+            break
+          // 微信接口请求错误
+          case -500:
+          case 10001:
+          case 10002:
+          case 10005:
+            tip.error('error：'+ newValue.errno)
+            console.log('status:' + newValue.errno +'，'+newValue.data)
+            this.json = null
+            break
+        }
+      }
+    }
+
+    // 通过code获取unionId验证用户身份
+    async getUnionidByCode() {
+      let res = await wepy.login()
+      const data = await api.getIsRegisteredusersByCodeid({
+        query:{
+          code: res.code
+        }
+      })
+      this.json = data.data
+      if(data.statusCode >= 400){
+        tip.error('error!' + data.statusCode)
+      }
+      this.$apply()
+    }
+
+    // 通过userInfo获取unionId验证用户身份
+    async getUnionidByUserinfo(info) {
+      const data = await api.getIsRegisteredusersByUserinfo({
+        query:info
+      })
+      this.json = data.data
+      if(data.statusCode >= 400){
+        tip.error('error!' + data.statusCode)
+      }
+      this.$apply()
+    }
+
+    // 通过phone验证登录
+    async getUnionidByPhone(phone){
+      const data = await api.getIsRegisteredusersByPhone({
+        query:{
+          iv: phone.iv,
+          encryptedData: phone.encryptedData
+        }
+      })
+      this.json = data.data
+      if(data.statusCode >= 400){
+        tip.error('error！' + data.statusCode)
+      }
+      this.$apply()
+    }
+
+    // 查询授权信息
+    async queryAuthorizationInformation() {
+      let res = await wepy.getSetting()
+      if ((res.authSetting)['scope.userInfo']) {
+        this.isHidden = true
+        this.$apply()
+        let infoRes = await wepy.getUserInfo()
+        this.rawData = infoRes.rawData
+        this.encryptedData = infoRes.encryptedData
+        this.getUnionidByUserinfo(infoRes)
+      }else{
+        console.log('没有授权，请点击按钮授权')
+      }
+    }
+
+    // 点击按钮，授权并获取userInfo，再进行处理
+    bindGetUserInfo(e) {
+      this.rawData = e.detail.rawData
+      this.encryptedData = e.detail.encryptedData
+      this.getUnionidByUserinfo(e.detail)
+    }
+
+    // 点击按钮，授权并获取phone，再进行处理
+    bindgetphonenumber(e) {
+      let data = e.detail
+      data.rawData = this.rawData
+      data.encryptedData2 = this.encryptedData
+      this.getUnionidByPhone(data)
+    }
+
+    async islang(e) {
+      let target = e.target.id
+      let lang = target === 'en' ? 'en' : 'zh'
+      await setLang(lang)
+      await getLang('login', this)
+      this.langbtnbgChange(target)
+    }
+
+    langbtnbgChange(target) {
+      if(target === 'en'){
+        this.enbtnBg = 'langBtn-tap'
+        this.zhbtnBg = ''
+      }else{
+        this.zhbtnBg = 'langBtn-tap'
+        this.enbtnBg = ''
+      }
+      this.$apply()
+    }
+
+    async onLoad() {
+      await getLang('login', this)
+      this.language === 'en' ? this.enbtnBg = 'langBtn-tap' : this.zhbtnBg = 'langBtn-tap'
+      await this.getUnionidByCode()
+    }
+  }
+</script>
