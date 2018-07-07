@@ -1,0 +1,2 @@
+@import "./../components/tab-bar.wxss";
+.langBtn-tap._00b5afe{background-color:#00acfc}.langBtn._00b5afe{height:80rpx;margin-bottom:50rpx}.langBtn button._00b5afe{width:100rpx;float:right}.nav navigator._00b5afe{box-sizing:border-box;width:100%;height:120rpx;margin-bottom:20rpx;text-align:center;font-size:34rpx;font-weight:600;line-height:120rpx;border:1rpx solid #cacaca;border-radius:8rpx;background-color:#f7f7f7}

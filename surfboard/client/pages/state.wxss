@@ -1,0 +1,4 @@
+@import "./../components/navigator-back.wxss";
+@import "./../components/tab-bar.wxss";
+@import "./../components/boardlist.wxss";
+.box._d2ae894{width:100%;margin:50rpx auto 0 auto}

@@ -1,0 +1,18 @@
+
+  <view class="container">
+    <view class="langBtn">
+      <button id="en" size="mini" hover-class="button-hover" bindtap="islang" class="{{enbtnBg}}">{{m.english}}</button>
+      <button id="zh" size="mini" hover-class="button-hover" bindtap="islang" class="{{zhbtnBg}}">{{m.chinese}}</button>
+    </view>
+    <view class="logo">
+      <text>{{m.logo}}</text>
+    </view>
+    <view hidden="{{isHidden}}">
+      <text>{{m.userinfoLogin}}</text>
+      <button class="login" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">{{m.loginBtn}}</button>
+    </view>
+    <view hidden="{{!isHidden}}">
+      <text>{{m.phoneLogin}}</text>
+      <button class="login" open-type="getPhoneNumber" bindgetphonenumber="bindgetphonenumber">{{m.loginBtn}}</button>
+    </view>
+  </view>

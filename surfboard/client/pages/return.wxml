@@ -1,0 +1,47 @@
+
+  <view class="_86958e2">
+    
+  <view class="goBack _da67d20 _86958e2">
+    <view bindtap="$navigatorBack$goBack" class="_da67d20">
+      <image src="../images/go-back.png" class="_da67d20"/>
+    </view>
+    <text class="_da67d20">{{$navigatorBack$message}}</text>
+  </view>
+    <view class="container box _86958e2">
+      
+  <view class="_8d227b6 _86958e2">
+    <view class="goodsId _8d227b6">{{$formlist$goodsId}}</view>
+    <view class="form _8d227b6">
+      <view class="row _8d227b6"  wx:for="{{$formlist$list}}" wx:key="{{item.id}}">
+        <text class="title _8d227b6">{{item.text}}</text>
+        <view wx:if="{{item.type==='input'}}" class="input _8d227b6">
+          <input id="{{item.id}}" type="text" class="{{item.disabled?'disabled':''}} _8d227b6" value="{{item.value}}" disabled="{{item.disabled}}" bindconfirm="$formlist$inputValueChange" bindblur="$formlist$inputValueChange" placeholder="{{item.placeholder}}"/>
+        </view>
+        <view wx:elif="{{item.type==='button'}}" class="input type _8d227b6">
+          <button id="hour" size="mini" bindtap="$formlist$changeHDbtn" class="{{$formlist$hourBtnActive?'active':''}} _8d227b6">{{item.value[0]}}</button>
+          <button id="day" size="mini" bindtap="$formlist$changeHDbtn" class="{{$formlist$dayBtnActive?'active':''}} _8d227b6">{{item.value[1]}}</button>
+        </view>
+        <view wx:elif="{{item.type==='addSub'}}" class="input time _8d227b6">
+          <button id="sub" size="mini" bindtap="$formlist$tapAddorSub" hover-class="button-hover" class="_8d227b6">
+            <image src="../images/sub.png" class="_8d227b6"/>
+          </button>
+          <text class="time _8d227b6">{{item.value}}</text>
+          <button id="add" size="mini" bindtap="$formlist$tapAddorSub" hover-class="button-hover" class="_8d227b6">
+            <image src="../images/add.png" class="_8d227b6"/>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+      <view class="backAndsubmit _86958e2">
+        <button hover-class="button-hover" bindtap="navToHome" class="_86958e2">{{m.back}}</button>
+        <button bindtap="onSubmit" hover-class="button-hover" class="_86958e2">{{m.submit}}</button>
+      </view>
+    </view>
+    
+  <view class="tabBar _b3f1fc8 _86958e2">
+    <navigator open-type="navigate"  wx:for="{{$tabBar$text}}" wx:key="{{index}}" url="{{item.url}}" class="{{$tabBar$father === item.url ? 'active' : ''}} _b3f1fc8">
+      {{item.text}}
+    </navigator>
+  </view>
+  </view>

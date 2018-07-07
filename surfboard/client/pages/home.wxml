@@ -1,0 +1,20 @@
+
+  <view class="container _00b5afe">
+    <view class="langBtn _00b5afe">
+      <button id="en" size="mini" hover-class="button-hover" bindtap="islang" class="{{enbtnBg}} _00b5afe">{{m.english}}</button>
+      <button id="zh" size="mini" hover-class="button-hover" bindtap="islang" class="{{zhbtnBg}} _00b5afe">{{m.chinese}}</button>
+    </view>
+    <view class="nav _00b5afe">
+      <navigator url="rent" class="_00b5afe">{{m.rent}}</navigator>
+      <navigator url="return" class="_00b5afe">{{m.return}}</navigator>
+      <navigator url="sell" class="_00b5afe">{{m.sell}}</navigator>
+      <navigator url="fix" class="_00b5afe">{{m.fix}}</navigator>
+      <navigator url="state" class="_00b5afe">{{m.state}}</navigator>
+    </view>
+    
+  <view class="tabBar _b3f1fc8 _00b5afe">
+    <navigator open-type="navigate"  wx:for="{{$tabBar$text}}" wx:key="{{index}}" url="{{item.url}}" class="{{$tabBar$father === item.url ? 'active' : ''}} _b3f1fc8">
+      {{item.text}}
+    </navigator>
+  </view>
+  </view>
